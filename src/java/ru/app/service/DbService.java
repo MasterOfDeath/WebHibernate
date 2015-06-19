@@ -31,9 +31,8 @@ public class DbService {
         this.paramEnd = "100000000";
     }
     
-    
-    
-    public List<Prod> getAll(){
+        
+    public List<Prod> getFiltered(){
         List<Prod> list = new ArrayList<Prod>();
         
         Session session = HibernateUtil.openSession();

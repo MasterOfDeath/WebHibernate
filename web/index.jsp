@@ -49,7 +49,7 @@
         <%!
         
             DbService dbService = new DbService();
-            List<Prod> prods = dbService.getAll();
+            List<Prod> prods = dbService.getFiltered();
         
             Iterator<Prod> prodItr = prods.iterator();
         %>
