@@ -4,79 +4,78 @@
     Author     : rinat
 --%>
 
-<%@ page import="java.util.Date" %>
-<%@ page import="java.sql.*" %>
-<% Class.forName("com.mysql.jdbc.Driver"); %>
+<%@page import="java.util.Iterator" %>
+<%@page import="java.util.List" %>
+<%@page import="java.util.ArrayList" %>
+<%@page import="ru.app.orm.Prod" %>
+<%@page import="ru.app.service.DbService" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Today's Date</title>
+        <title>Поиск по прайсу</title>
     </head>
-    <%
-        Date date = new Date();
-        %>
     <body>
         
-        <%!
-        public class Actor {
-            String URL = "jdbc:mysql://localhost:3306/sakila";
-            String USERNAME = "root";
-            String PASSWORD = "qweqwe";
-            
-            Connection connection = null;
-            PreparedStatement selectActors = null;
-            ResultSet resultSet = null;
-            
-            public Actor(){
-                try {
-                    connection = DriverManager.getConnection(URL,USERNAME,PASSWORD);
-                    
-                    selectActors = connection.prepareStatement("SELECT actor_id,first_name,last_name FROM actor");
-                    
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            public ResultSet getActors() {
-                try {
-                    resultSet = selectActors.executeQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                return resultSet;
-            }
-        }
-        %>  
+        <br />
+        <br />
+        Прайс лист
+        <br />
+        <br />
         
-        <%
-            Actor actor = new Actor();
-            ResultSet actors = actor.getActors();
-        %>
-        
-        <table border="1">
+        <table border="0">
             <tbody>
                 <tr>
-                    <td>Actor ID</td>
-                    <td>First Name</td>
-                    <td>Last Name</td>
+                    <td>Категория:</td>
+                    <td>Наименование:</td>
+                    <td>Цена от:</td>
+                    <td>Цена до:</td>
+                    <td></td>
                 </tr>
-                <% while (actors.next()) {%>
                 <tr>
-                    <td><%= actors.getInt("actor_id") %></td>
-                    <td><%= actors.getString("first_name") %></td>
-                    <td><%= actors.getString("last_name") %></td>
+                    <td><input type="text" name="catInput" value="" size="15" /></td>
+                    <td><input type="text" name="nameInput" value="" size="15" /></td>
+                    <td><input type="text" name="price1Input" value="" size="10" /></td>
+                    <td><input type="text" name="price2Input" value="" size="10" /></td>
+                    <td><input type="submit" value="Найти" name="serachBtn" /></td>
                 </tr>
-                <% } %>
             </tbody>
         </table>
 
+        <br />
         
-        <h1>Today's Date</h1>
-        <p>Today's date is <%= date %></p>
+        <%!
+        
+            DbService dbService = new DbService();
+            List<Prod> prods = dbService.getAll();
+        
+            Iterator<Prod> prodItr = prods.iterator();
+        %>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Категория</th>
+                    <th>Нименование</th>
+                    <th>Цена</th>
+                </tr>
+            </thead>
+        <tbody>
+            <% for (int i = 0; i < prods.size(); i++) {
+                    Prod prod = prods.get(i);
+            %>
+            <tr>
+                <td><%= prod.getCat().getCatName() %></td>
+                <td><%= prod.getName() %></td>
+                <td><%= prod.getPrice() %></td>
+            </tr>
+            <% } %>
+        </tbody>
+        </table>
+        
+           
         
         <form name="myForm" action="display.jsp" method="POST">
             <table border="0">
