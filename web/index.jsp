@@ -4,11 +4,11 @@
     Author     : rinat
 --%>
 
-<%@page import="java.util.Iterator" %>
 <%@page import="java.util.List" %>
 <%@page import="java.util.ArrayList" %>
 <%@page import="ru.app.orm.Prod" %>
 <%@page import="ru.app.service.DbService" %>
+<%@page import="ru.app.controller.FilterServlet" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -19,6 +19,7 @@
     </head>
     <body>
         
+        <form name="filterForm" action="FilterServlet" method="POST">
         <br />
         <br />
         Прайс лист
@@ -38,7 +39,7 @@
                     <td><input type="text" name="catInput" value="" size="15" /></td>
                     <td><input type="text" name="nameInput" value="" size="15" /></td>
                     <td><input type="text" name="price1Input" value="" size="10" /></td>
-                    <td><input type="text" name="price2Input" value="" size="10" /></td>
+                    <td><input type="text" name="price2Input" value="10000000" size="10" /></td>
                     <td><input type="submit" value="Найти" name="serachBtn" /></td>
                 </tr>
             </tbody>
@@ -46,12 +47,18 @@
 
         <br />
         
-        <%!
+        <%
         
-            DbService dbService = new DbService();
-            List<Prod> prods = dbService.getFiltered();
-        
-            Iterator<Prod> prodItr = prods.iterator();
+            DbService dbService = (DbService)session.getAttribute("service");
+            
+            if (dbService == null) {
+                %>
+                <jsp:forward page="/FilterServlet"/> 
+            <%}
+            
+            List<Prod> prods;
+            if (dbService != null) {
+                prods = dbService.getFiltered();
         %>
 
         <table border="1">
@@ -71,43 +78,14 @@
                 <td><%= prod.getName() %></td>
                 <td><%= prod.getPrice() %></td>
             </tr>
-            <% } %>
+            <% } 
+            
+            }
+            %>
+          
         </tbody>
         </table>
         
-           
-        
-        <form name="myForm" action="display.jsp" method="POST">
-            <table border="0">
-                <tbody>
-                    <tr>
-                        <td>First name: </td>
-                        <td><input type="text" name="first" value="" size="50" /></td>
-                    </tr>
-                    <tr>
-                        <td>Last name: </td>
-                        <td><input type="text" name="last" value="" size="50" /></td>
-                    </tr>
-                    <tr>
-                        <td>Email Address</td>
-                        <td><input type="text" name="email" value="" size="50" /></td>
-                    </tr>
-                    <tr>
-                        <td>Gender: </td>
-                        <td><select name="gender">
-                                <option>Male</option>
-                                <option>Female</option>
-                            </select></td>
-                    </tr>
-                    <tr>
-                        <td>Date of Birth: </td>
-                        <td><input type="text" name="dob" value="DD/MM/YYY" size="15" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <input type="reset" value="Clear" name="clear" />
-            <input type="submit" value="Submit" name="submit" />
         </form>
-        
     </body>
 </html>

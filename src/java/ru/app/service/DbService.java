@@ -18,15 +18,15 @@ import ru.app.util.HibernateUtil;
  */
 public class DbService {
     
-    private final String paramName;
-    private final String paramCat;
-    private final String paramStart;
-    private final String paramEnd;
+    private String paramCat;
+    private String paramName;
+    private String paramStart;
+    private String paramEnd;
     
 
     public DbService() {
-        this.paramName = "";
         this.paramCat = "";
+        this.paramName = "";
         this.paramStart = "";
         this.paramEnd = "100000000";
     }
@@ -34,7 +34,7 @@ public class DbService {
         
     public List<Prod> getFiltered(){
         List<Prod> list = new ArrayList<Prod>();
-        
+                
         Session session = HibernateUtil.openSession();
         Transaction tx = null;	
         try {
@@ -44,9 +44,10 @@ public class DbService {
                         "SELECT prod " +
                         "FROM Prod as prod, Cat as cat " +
                         "WHERE prod.cat = cat and (prod.name LIKE :name and cat.catName LIKE :cat and prod.price BETWEEN :start and :end) " +
+                        //"WHERE prod.cat = cat and (prod.name LIKE '%' and cat.catName LIKE 'pri%' and prod.price BETWEEN '0' and '10000000') " +
                         "ORDER BY cat.catName, prod.name")
-                        .setParameter("name", paramName + "%")
                         .setParameter("cat", paramCat + "%")
+                        .setParameter("name", paramName + "%")
                         .setParameter("start", paramStart)
                         .setParameter("end", paramEnd)
                         .list();
@@ -59,5 +60,13 @@ public class DbService {
         }
         
         return list;
+    }
+    
+    public void setFilterParams(String paramCat, String paramName,
+            String paramStart, String paramEnd) {
+        this.paramCat = paramCat;
+        this.paramName = paramName;
+        this.paramStart = paramStart;
+        this.paramEnd = paramEnd;
     }
 }

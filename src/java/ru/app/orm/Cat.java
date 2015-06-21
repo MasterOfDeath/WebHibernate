@@ -1,5 +1,5 @@
 package ru.app.orm;
-// Generated 19.06.2015 16:34:18 by Hibernate Tools 4.3.1
+// Generated 21.06.2015 21:51:28 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;

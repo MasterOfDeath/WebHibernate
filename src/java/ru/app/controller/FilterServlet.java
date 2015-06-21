@@ -10,13 +10,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import ru.app.service.DbService;
 
 /**
  *
  * @author rinat
  */
-public class ProdServlet extends HttpServlet {
+public class FilterServlet extends HttpServlet {
 
+    DbService dbService = new DbService();
+    
+    public FilterServlet() {
+    }
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,10 +44,10 @@ public class ProdServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ProdServlet</title>");            
+            out.println("<title>Servlet FilterServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ProdServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet FilterServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -58,7 +67,11 @@ public class ProdServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
+        HttpSession session = request.getSession(true);
+        
+        session.setAttribute("service", dbService);
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     /**
@@ -72,7 +85,23 @@ public class ProdServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
+        HttpSession session = request.getSession(true);
+        
+        System.out.println("Category: " + request.getParameter("catInput"));
+        
+        //request.setCharacterEncoding("UTF-8");
+        //response.setContentType("text/html;charset=UTF-8");
+        
+        dbService.setFilterParams(
+                request.getParameter("catInput"),
+                request.getParameter("nameInput"),
+                request.getParameter("price1Input"),
+                request.getParameter("price2Input"));
+        
+        session.setAttribute("service", dbService);
+        
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     /**
@@ -85,4 +114,15 @@ public class ProdServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    /*private String toUTF8(String str) {
+        String result = "";
+        try {
+            result = new String(str.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (java.io.UnsupportedEncodingException ex) {
+            System.err.println(ex);
+        }
+        
+        return result;
+    }*/
+    
 }
