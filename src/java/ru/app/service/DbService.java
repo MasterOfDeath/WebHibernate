@@ -40,11 +40,10 @@ public class DbService {
         try {
                 tx = session.getTransaction();
                 tx.begin();
-                list = session.createQuery(
+                list = (ArrayList<Prod>)session.createQuery(
                         "SELECT prod " +
                         "FROM Prod as prod, Cat as cat " +
                         "WHERE prod.cat = cat and (prod.name LIKE :name and cat.catName LIKE :cat and prod.price BETWEEN :start and :end) " +
-                        //"WHERE prod.cat = cat and (prod.name LIKE '%' and cat.catName LIKE 'pri%' and prod.price BETWEEN '0' and '10000000') " +
                         "ORDER BY cat.catName, prod.name")
                         .setParameter("cat", paramCat + "%")
                         .setParameter("name", paramName + "%")
